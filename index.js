@@ -49,6 +49,8 @@ async function run() {
                res.send(result)
           })
 
+
+
           // delete api
           app.delete('/users/:id', async (req, res) => {
                const id = req.params.id;
@@ -56,6 +58,23 @@ async function run() {
                const result = await userCollection.deleteOne(query);
                console.log('deleted user id', result);
                res.json(result);
+          })
+
+          // update
+          app.put('/users/:id', async (req, res) => {
+               const id = req.params.id;
+               const updatedUser = req.body;
+               const filter = { _id: ObjectId(id) };
+               const option = { upsert: true };
+               const updateDocument = {
+                    $set: {
+                         name: updatedUser.name,
+                         email: updatedUser.email
+                    },
+               };
+               const result = await userCollection.updateOne(filter, updateDocument, option);
+               res.json(result);
+
           })
 
      } finally {
